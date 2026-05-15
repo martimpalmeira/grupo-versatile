@@ -182,8 +182,8 @@ h1, h2, h3, h4 {
   letter-spacing: -0.035em;
   color: var(--navy-900);
 }
-h1 { font-size: clamp(44px, 7.5vw, 104px); font-weight: 500; }
-h2 { font-size: clamp(36px, 5.2vw, 72px); }
+h1 { font-size: clamp(30px, 4.4vw, 57px); font-weight: 500; }
+h2 { font-size: clamp(26px, 4.4vw, 57px); }
 h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
 .italic-serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 
@@ -340,6 +340,7 @@ h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
   background: radial-gradient(ellipse at 20% 0%, #143475 0%, var(--navy-900) 55%, #030a1e 100%);
   color: white;
   padding: 0;
+  isolation: isolate;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -410,7 +411,9 @@ h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
 }
 @media (max-width: 980px) {
   .hero-inner { grid-template-columns: 1fr; gap: 0; }
-  .hero-content { padding-top: 120px; padding-bottom: 40px; }
+  .hero-content { padding-top: 120px; padding-bottom: 420px; }
+  .hero h1 { font-size: 48px; }
+  h2 { font-size: 32px; }
 }
 
 .hero-eyebrow {
@@ -505,7 +508,7 @@ h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
   letter-spacing: 0.02em;
 }
 
-/* Hero visual */
+/* Hero visual — apenas cards e overlay, sem fundo */
 .hero-visual {
   position: relative;
   height: auto;
@@ -517,21 +520,39 @@ h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
 }
 .loaded .hero-visual { opacity: 1; transform: translateX(0); }
 @media (max-width: 980px) {
-  .hero-visual { height: 340px; min-height: unset; align-self: auto; }
+  .hero-visual { height: 0; min-height: 0; align-self: auto; }
 }
 
-/* Person image */
+/* Person image — posicionada diretamente no .hero para blend funcionar */
+.imagem-blend { mix-blend-mode: lighten; }
 .hv-person-img {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 14%;
   height: 90%;
   width: auto;
   max-width: none;
   pointer-events: none;
   user-select: none;
-  z-index: 0;
+  z-index: 3;
+  mix-blend-mode: lighten;
+  -webkit-mask-image:
+    radial-gradient(ellipse 80% 95% at 50% 52%,
+      black 30%,
+      transparent 72%);
+  mask-image:
+    radial-gradient(ellipse 80% 95% at 50% 52%,
+      black 30%,
+      transparent 72%);
+}
+@media (max-width: 980px) {
+  .hv-person-img {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 420px;
+    bottom: 48px;
+  }
 }
 /* Overlay — funde o homem no fundo azul */
 .hv-overlay {
@@ -595,30 +616,7 @@ h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
 .hv-float.hf2 { top: 48%; right: 0%; animation-delay: -3.5s; }
 .hv-float.hf3 { bottom: 10%; left: 5%; animation-delay: -6s; }
 @media (max-width: 980px) {
-  /* Mostrar imagem e cards no mobile */
-  .hv-person-img {
-    height: 100%;
-  }
-  .hv-overlay {
-    display: block;
-  }
-  /* Escalar cards para mobile */
-  .hv-float {
-    padding: 9px 13px;
-    gap: 9px;
-    border-radius: 12px;
-  }
-  .hv-float .hf-icon {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-  }
-  .hv-float .hf-icon svg { width: 14px; height: 14px; }
-  .hv-float .hf-label { font-size: 9px; }
-  .hv-float .hf-value { font-size: 13px; }
-  /* Reposicionar cards para mobile */
-  .hv-float.hf1 { top: 10%; left: 3%; animation-delay: -1s; }
-  .hv-float.hf2 { top: 40%; right: 3%; animation-delay: -3.5s; }
-  .hv-float.hf3 { bottom: 8%; left: 4%; animation-delay: -6s; }
+  .hv-overlay { display: block; }
 }
 
 .hv-card {
@@ -1808,6 +1806,9 @@ h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
 
 <!-- ===== HERO ===== -->
 <section class="hero">
+  <!-- Imagem fora de qualquer stacking context isolado para mix-blend-mode funcionar com o fundo -->
+  <img src="assets/img/image-hero.png" class="hv-person-img imagem-blend" alt="" aria-hidden="true">
+
   <div class="hero-grid"></div>
   <div class="hero-orb o1"></div>
   <div class="hero-orb o2"></div>
@@ -1866,46 +1867,8 @@ h3 { font-size: clamp(22px, 2.4vw, 32px); letter-spacing: -0.02em; }
 
       <!-- Visual -->
       <div class="hero-visual">
-
-        <!-- Imagem do homem -->
-        <img src="assets/img/image-hero.png" class="hv-person-img" alt="" aria-hidden="true">
-
         <!-- Overlay de ambientação -->
         <div class="hv-overlay" aria-hidden="true"></div>
-
-        <!-- Card azul — topo esquerdo -->
-        <div class="hv-float hf-blue hf1" aria-hidden="true">
-          <div class="hf-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <div>
-            <div class="hf-label">Cotação</div>
-            <div class="hf-value">Resposta em 48h</div>
-          </div>
-        </div>
-
-        <!-- Card laranja — meio direito -->
-        <div class="hv-float hf-orange hf2" aria-hidden="true">
-          <div class="hf-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          </div>
-          <div>
-            <div class="hf-label">Pedidos</div>
-            <div class="hf-value">+500 operações</div>
-          </div>
-        </div>
-
-        <!-- Card branco — base esquerda -->
-        <div class="hv-float hf-white hf3" aria-hidden="true">
-          <div class="hf-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          </div>
-          <div>
-            <div class="hf-label">Entrega</div>
-            <div class="hf-value">Rastreável e ágil</div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
